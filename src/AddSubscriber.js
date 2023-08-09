@@ -2,14 +2,17 @@ import React, { Component, useState } from 'react';
 import Header from './Header';
 import './AddSubscriber.css';
 import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
-export default function AddSubscriber({addSubscriberHandler, history}){
+export default function AddSubscriber({addSubscriberHandler}){
 
     const [addSubscriberForm, setAddSubscriberForm] = useState({
         id: 0,
         name: '',
         phone: ''
     })
+
+    const history = useHistory();
 
     const inputChangedHandler = (e) => {
         const state = addSubscriberForm;
