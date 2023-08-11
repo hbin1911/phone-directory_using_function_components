@@ -1,7 +1,9 @@
-import React, {Component, useState} from 'react';
+import React, {Component, Fragment, useState} from 'react';
 import AddSubscriber from './AddSubscriber';
 import ShowSubscribers from './ShowSubscribers';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { SubscriberCountContext } from './SubscriberCountContext';
+import Footer from './Footer';
 
 export default function PhoneDirectory(){
 
@@ -39,12 +41,17 @@ export default function PhoneDirectory(){
 
 
     return (
-        <Router>
-            <div>
-                <Route exact path="/" render={(props) => <ShowSubscribers {...props} subscribersList={subscribersList} deleteSubscriberHandler={(subscriberId)=>deleteSubscriberHandler(subscriberId)} />} />
-                <Route exact path="/add" render={({history}, props) => <AddSubscriber {...props} addSubscriberHandler={(newSubscriber)=>addSubscriberHandler(newSubscriber)} />} />
-            </div>
-        </Router>
+        <Fragment>
+            <Router>
+                <div>
+                    <Route exact path="/" render={(props) => <ShowSubscribers {...props} subscribersList={subscribersList} deleteSubscriberHandler={(subscriberId)=>deleteSubscriberHandler(subscriberId)} />} />
+                    <Route exact path="/add" render={({history}, props) => <AddSubscriber {...props} addSubscriberHandler={(newSubscriber)=>addSubscriberHandler(newSubscriber)} />} />
+                </div>
+            </Router>
+            <SubscriberCountContext.Provider value={subscribersList.length}>
+            <Footer></Footer>
+            </SubscriberCountContext.Provider>
+        </Fragment>
     )
 
 }
