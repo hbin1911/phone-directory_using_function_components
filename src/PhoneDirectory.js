@@ -1,4 +1,4 @@
-import React, {Component, Fragment, useState} from 'react';
+import React, {Component, Fragment, useEffect, useState} from 'react';
 import AddSubscriber from './AddSubscriber';
 import ShowSubscribers from './ShowSubscribers';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
@@ -7,35 +7,60 @@ import Footer from './Footer';
 
 export default function PhoneDirectory(){
 
-            const [subscribersList,setSubscribersList] = useState([
-                {
-                    id: 1,
-                    name: "Shilpa Bhat",
-                    phone: "9999999999"
-                },
-                {
-                    id: 2,
-                    name: "Srishti Gupta",
-                    phone: "8888888888"
-                }
-            ]);
+            const [subscribersList,setSubscribersList] = useState([]);
+
+            async function loadData(){
+                const rawResponse = await fetch("http://localhost:7081/contacts");
+                const data = await rawResponse.json();
+                setSubscribersList(data)
+
+                // const results =  fetch("http://localhost:7081/contacts")
+                // .then (response=>response.json())
+                // .then (data=>setSubscribersList(data))
+             }
+
+            useEffect(()=>{
+                loadData()
+                
+            })
 
 
 
-   function deleteSubscriberHandler (subscriberId)  {
-        const newSubscribers = subscribersList.filter((subscriber)=>subscriber.id !== subscriberId);
-        setSubscribersList(newSubscribers)
-    }
+    async function deleteSubscriberHandler (subscriberId)  {
+        // const newSubscribers = subscribersList.filter((subscriber)=>subscriber.id !== subscriberId);
+        // setSubscribersList(newSubscribers)
 
-    function addSubscriberHandler  (newSubscriber) {
+        // fetch("http://localhost:7081/contacts/" + subscriberId, {method: "DELETE"})
+        //     .then(input=>input.json())
+        //     .then(data=>{
+        //         loadData();
+        //     })
 
-        if (subscribersList.length > 0) {
-            newSubscriber.id = subscribersList[subscribersList.length - 1].id + 1;
-        } else {
-            newSubscriber.id = 1;
-        }
-        subscribersList.push(newSubscriber);
-        setSubscribersList(subscribersList)
+        const rawResponse = await fetch("http://localhost:7081/contacts/" + subscriberId, {method: "DELETE"});
+        const data = await rawResponse.json();
+        loadData();
+
+    }   
+
+    async function addSubscriberHandler  (newSubscriber) {
+
+        const rawResponse = await fetch("http://localhost:7081/contacts",
+        {
+            method:"POST",
+            headers:{'Content-Type': 'application/json'},
+            body : JSON.stringify(newSubscriber)
+        })
+
+        const data = await rawResponse.json();
+        loadData();
+
+        // if (subscribersList.length > 0) {
+        //     newSubscriber.id = subscribersList[subscribersList.length - 1].id + 1;
+        // } else {
+        //     newSubscriber.id = 1;
+        // }
+        // subscribersList.push(newSubscriber);
+        // setSubscribersList(subscribersList)
         //this.setState({ subscribersList: subscribersList });
     }
 
