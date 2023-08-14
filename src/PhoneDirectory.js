@@ -1,17 +1,20 @@
-import React, {Component, Fragment, useCallback, useEffect, useMemo, useState} from 'react';
+import React, {Component, Fragment, useCallback, useEffect, useMemo, useReducer, useState} from 'react';
 import AddSubscriber from './AddSubscriber';
 import ShowSubscribers from './ShowSubscribers';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { SubscriberCountContext } from './SubscriberCountContext';
 import Footer from './Footer';
+import TotalSubscribersReducer from './TotalSubscribersReducer';
 
 export default function PhoneDirectory(){
 
             const [subscribersList,setSubscribersList] = useState([]);
+            const [state, dispatch] = useReducer(TotalSubscribersReducer, {count:0})
 
             async function loadData(){
                 const rawResponse = await fetch("http://localhost:7081/contacts");
                 const data = await rawResponse.json();
+                dispatch({"type": "UPDATE_COUNT", payload: data.length})
                 setSubscribersList(data)
 
                 // const results =  fetch("http://localhost:7081/contacts")
@@ -30,9 +33,9 @@ export default function PhoneDirectory(){
             loadData();
         }, [subscribersList])
 
-        const numberOfSubscriptions = useMemo(()=>{
-            return subscribersList.length;
-        },[subscribersList])
+        // const numberOfSubscriptions = useMemo(()=>{
+        //     return subscribersList.length;
+        // },[subscribersList])
 
 
     // async function deleteSubscriberHandler (subscriberId)  {
@@ -80,7 +83,7 @@ export default function PhoneDirectory(){
                     <Route exact path="/add" render={({history}, props) => <AddSubscriber {...props} addSubscriberHandler={(newSubscriber)=>addSubscriberHandler(newSubscriber)} />} />
                 </div>
             </Router>
-            <SubscriberCountContext.Provider value={numberOfSubscriptions}>
+            <SubscriberCountContext.Provider value={state.count}>
             <Footer></Footer>
             </SubscriberCountContext.Provider>
         </Fragment>
