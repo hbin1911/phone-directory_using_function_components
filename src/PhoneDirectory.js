@@ -1,4 +1,4 @@
-import React, {Component, Fragment, useEffect, useState} from 'react';
+import React, {Component, Fragment, useCallback, useEffect, useMemo, useState} from 'react';
 import AddSubscriber from './AddSubscriber';
 import ShowSubscribers from './ShowSubscribers';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
@@ -24,23 +24,30 @@ export default function PhoneDirectory(){
                 
             })
 
+        const deleteSubscriberHandler = useCallback(async(subscriberId)=>{
+            const rawResponse = await fetch("http://localhost:7081/contacts/" + subscriberId, {method: "DELETE"});
+            const data = await rawResponse.json();
+            loadData();
+        }, [subscribersList])
+
+        const numberOfSubscriptions = useMemo(()=>{
+            return subscribersList.length;
+        },[subscribersList])
 
 
-    async function deleteSubscriberHandler (subscriberId)  {
-        // const newSubscribers = subscribersList.filter((subscriber)=>subscriber.id !== subscriberId);
-        // setSubscribersList(newSubscribers)
+    // async function deleteSubscriberHandler (subscriberId)  {
+    //     // const newSubscribers = subscribersList.filter((subscriber)=>subscriber.id !== subscriberId);
+    //     // setSubscribersList(newSubscribers)
 
-        // fetch("http://localhost:7081/contacts/" + subscriberId, {method: "DELETE"})
-        //     .then(input=>input.json())
-        //     .then(data=>{
-        //         loadData();
-        //     })
+    //     // fetch("http://localhost:7081/contacts/" + subscriberId, {method: "DELETE"})
+    //     //     .then(input=>input.json())
+    //     //     .then(data=>{
+    //     //         loadData();
+    //     //     })
 
-        const rawResponse = await fetch("http://localhost:7081/contacts/" + subscriberId, {method: "DELETE"});
-        const data = await rawResponse.json();
-        loadData();
+        
 
-    }   
+    // }   
 
     async function addSubscriberHandler  (newSubscriber) {
 
@@ -73,7 +80,7 @@ export default function PhoneDirectory(){
                     <Route exact path="/add" render={({history}, props) => <AddSubscriber {...props} addSubscriberHandler={(newSubscriber)=>addSubscriberHandler(newSubscriber)} />} />
                 </div>
             </Router>
-            <SubscriberCountContext.Provider value={subscribersList.length}>
+            <SubscriberCountContext.Provider value={numberOfSubscriptions}>
             <Footer></Footer>
             </SubscriberCountContext.Provider>
         </Fragment>
