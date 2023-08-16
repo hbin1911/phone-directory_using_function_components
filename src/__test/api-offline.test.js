@@ -6,11 +6,6 @@ global.fetch = jest.fn().mockImplementation(()=>{
         json:()=>Promise.resolve({"city":"mock-city", "region":"mock-region", "country_name":"mock_country"});
     })
 })
-global.fetch = jest.fn().mockImplementation(()=>{
-    return Promise.resolve({
-        json:()=>Promise.resolve({"city":"mock-city", "region":"mock-region", "country_name":"mock_country"});
-    })
-})
 
 test("Location detail should not be empty for mocked api response", async()=>{
     const actualResponse = await downloadLocationDetail();
