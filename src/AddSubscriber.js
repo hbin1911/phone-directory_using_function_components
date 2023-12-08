@@ -65,6 +65,7 @@ export default function AddSubscriber({addSubscriberHandler}){
                         <span className="subscriber-to-add-heading">Subscriber to be added: </span><br />
                         <span className="subscriber-info">Name: {name}</span><br />
                         <span className="subscriber-info">Phone: {phone}</span><br />
+                        <span className="subscriber-info">test: {phone}</span><br />
                     </div>
 
                     <button type="submit" className="custom-btn add-btn">Add</button>
